@@ -1,0 +1,10 @@
+Registred Users:
+{% if users %}
+    <ul>
+    {% for u in users %}
+            <li><a href="/user/{{ u.getUsername() }}">{{ u.getUsername() }}</a></li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+

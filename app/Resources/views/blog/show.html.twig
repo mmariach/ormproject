@@ -1,0 +1,57 @@
+{# app/Resources/views/blog/show.html.twig #}
+
+{% extends 'base.html.twig' %}
+{% block body %}
+
+    {% if form %}
+        <!-- Renders the start tag of the form, including the correct enctype attribute when using file uploads. -->
+        {{ form_start(form) }}
+        <div>
+            <table>
+                <tr>
+                    <td>
+                        {{ form_row(form.title) }}
+                        {{ form_row(form.content) }}
+                        {{ form_row(form.submit) }}
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        {{ form_end(form) }}
+    {% endif %}
+    {% if msgs == null  %}
+        {%  if msg.getAuthor() %}
+             Message({{ msg.getId() }}): {{ msg.getAuthor()}}, {{ msg.getTitle() }}, {{ msg.getDate()|date("d/m/Y")  }}, {{ msg.getContent() }}
+        {% endif %}
+    {% endif %}
+    {% if msgs  %}
+        <table border="1" valign="center" width="100%">
+        {% for m in msgs %}
+            <tr>
+                <td rowspan="2">
+                    {% if m.getUser() %}
+                        {% if m.getUser().getUserAvatarFilename() %}
+                            <img src="{{ asset('uploads/img/' ~ m.getUser().getUserAvatarFilename()) }}" height="50">
+                        {% endif %}
+                    {% else %}
+                        <img src="{{ asset('uploads/img/blank.jpg') }}" height="50">
+                    {% endif %}
+                </td>
+                <td>{{ m.getAuthor() }}</td>
+                <td width="50%">{{ m.getTitle() }}</td>
+                <td align="right">{{ m.getDate()|date('d.m.Y, H:i') }}</td>
+            </tr>
+            <tr>
+                <td colspan="3" >{{ m.getContent() }}  </td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% endif %}
+
+{% endblock %}
+{% block sidepanel %}
+    {{ parent() }}
+    {{ render(controller('AppBundle:Default:userPanel')) }}
+{% endblock %}
+

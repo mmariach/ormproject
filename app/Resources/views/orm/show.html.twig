@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    {% if categories %}
+        {% for c in categories %}
+            <ul>
+                <li>
+                    <p>Category: {{ c.getName() }}</p>
+                    {% for p in c.getProducts() %}
+                        <ul>
+                            <li>
+                                <p> Product name: {{ p.getName() }} , price: {{ p.getPrice() }} , description: {{ p.getDescription() }}
+                                {% if p.getBrochure() %}
+                                    <a href="{{ asset('uploads/document/' ~ p.getBrochure()) }}">View PDF</a>
+                                {% endif %}
+                                </p>
+                            </li>
+                        </ul>
+                    {% endfor %}
+                </li>
+            </ul>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+{% block sidepanel %}
+    {{ parent() }}
+    {{ render(controller('AppBundle:Default:userPanel')) }}
+{% endblock %}

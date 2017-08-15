@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Admin main Control</h1>
+    {# Username: {{ user.getUsername() }}#}
+    {% if form %}
+        <h3>Add a new Product:</h3>
+        <!-- Renders the start tag of the form, including the correct enctype attribute when using file uploads. -->
+        {{ form_start(form) }}
+        <div>
+            <table>
+                <tr>
+                    <td>{{ form_row(form.category) }} </td>
+                </tr><tr>
+                    <td>{{ form_row(form.name) }} </td>
+                </tr><tr>
+                    <td>{{ form_row(form.price) }}</td>
+                </tr><tr>
+                    <td>{{ form_row(form.description) }}</td>
+                </tr><tr>
+                    <td>{{ form_row(form.brochure) }}</td>
+                </tr>
+                    <td>{{ form_row(form.submit) }}</td>
+                </tr>
+            </table>
+        </div>
+
+        {{ form_end(form) }}
+    {% endif %}
+
+{% endblock %}
+
+{% block sidepanel %}
+    {{ parent() }}
+    {{ render(controller('AppBundle:Default:userPanel')) }}
+{% endblock %}
+
+

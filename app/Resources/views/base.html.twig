@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Welcome{% endblock %}</title>
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+    {% endblock %}
+
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+</head>
+<body>
+
+<header>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/orm/show">Products</a></li>
+            {% if is_granted('ROLE_USER') %}
+                <li><a href="/user/{{ app.user.username }}">User</a></li>
+                <li><a href="{{ path('logout') }}">Logout</a></li>
+            {% elseif is_granted('ROLE_ADMIN') %}
+                <li><a href="{{ path('admin') }}">Admin</a></li>
+                <li><a href="{{ path('logout') }}">Logout</a></li>
+            {% else %}
+                <li><a href="{{ path('login2') }}">Login</a></li>
+            {% endif %}
+            <li><a href="/register">Register</a></li>
+        </ul>
+    </nav>
+</header>
+
+<content>
+    {% block body %}
+
+    {% endblock %}
+</content>
+
+<aside id="news">
+    {% block sidepanel %}
+
+    {% endblock %}
+</aside>
+
+<footer>
+    <p>Made with <a href="https://symfony.com">Symfony {{ constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION') }}</a></p>
+</footer>
+</body>
+</html>

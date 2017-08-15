@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    {#<h3>    Welcome {{ app.user ? app.user.username : 'Anonymous' }} <br></h3>#}
+    {# <h3>    Welcome {{ user.getUsername()}} <br></h3>#}
+    <table border="1" valign="center" width="100%">
+        <tr>
+            <td>
+                <h4>User Information</h4>
+                ID: {{ user.getId() }} <br>
+                Username: {{ user.getUsername() }} <br>
+                Email: {{ user.getEmail() }} <br>
+                {# BCrypt: {{ user.getPassword() }} #}
+            </td>
+            {% if user.getUserAvatarFilename() %}
+                <td width="37%" align="right">
+                    <img src="{{ asset('uploads/img/' ~ user.getUserAvatarFilename()) }}" height="150">
+                </td>
+            {% endif %}
+        </tr>
+    </table>
+
+    {% if form %}
+        <!-- Renders the start tag of the form, including the correct enctype attribute when using file uploads. -->
+        {{ form_start(form) }}
+        <div>
+            <table>
+                <tr>
+                    <td>
+                    {{ form_row(form.email) }}
+                    {{ form_row(form.userAvatarFilename) }}
+                    {{ form_row(form.plainPassword) }}
+                    {{ form_row(form.submit) }}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        {{ form_end(form) }}
+    {% endif %}
+
+{% endblock %}
+{% block sidepanel %}
+    {{ parent() }}
+    {{ render(controller('AppBundle:Default:userPanel')) }}
+{% endblock %}

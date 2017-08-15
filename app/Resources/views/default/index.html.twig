@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <h2>Symfony Demoproject</h2>
+
+    This is a simple Demoproject to show the advantage of a PHP Webframework, especially at the Backend. As you can see, my intention
+    is not to develop a super good looking Frontend. Have fun.
+    <br><br>
+    <p>Using Symfony Services:</p>
+    <ul>
+        <li>Security</li>
+        <li>Doctrine Orm</li>
+        <li>Swift Mailer</li>
+        <li>Form Builder</li>
+        <li>...</li>
+        <li>Twig Templates</li>
+
+
+    </ul>
+    <p>
+        Project Directory:
+        <code>{{ base_dir }}</code>
+    </p>
+    <p>
+        Instructions:
+        <code>{{ base_dir }}README.md</code>
+    </p>
+
+
+{% endblock %}
+
+{% block sidepanel %}
+    {{ parent() }}
+    {{ render(controller('AppBundle:Default:userPanel')) }}
+{% endblock %}

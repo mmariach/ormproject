@@ -1,0 +1,148 @@
+/******************************
+Flexbox Layout
+*******************************/
+body {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-flow: row wrap;
+    flex-flow: row wrap;
+    max-width: 70em;
+    font-size: 14px;
+}
+
+header,
+nav,
+nav a,
+content,
+aside,
+section,
+footer {
+    border-radius: 0.25em 0.25em;
+    border: 1px solid;
+    padding: 4px;
+    margin: 4px;
+    -webkit-flex: 1 100%;
+    flex: 1 100%;
+}
+
+header {
+    background: #FFFFFF;
+    border-color: #FFFFFF;
+    display: -webkit-flex;
+    -webkit-flex-flow: row wrap;
+    display: flex;
+    flex-flow: row wrap;
+}
+
+header * {
+    -webkit-flex: 1 1 0%;
+    flex: 1 1 0%;
+
+}
+
+header img {
+    -webkit-flex: 0 0 150px;
+    flex: 0 0 150px;
+    margin-right: 50px;
+}
+
+header nav {
+    -webkit-flex: 1 1 100%;
+    flex: 1 1 100%;
+
+}
+
+nav,
+nav ul,
+nav li {
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+nav ul {
+    display: -webkit-flex;
+    -webkit-flex-direction: row;
+    display: flex;
+    flex-direction: row;
+}
+
+nav li {
+    list-style-type: none;
+    margin: 0 10px;
+}
+
+nav a {
+    display: inline-block;
+    width: 60%;
+    background: #FFFFFF;
+    border: 1px solid #000000;
+    margin: 0;
+    text-align: center;
+    text-decoration: none;
+}
+
+nav a:hover {
+    background-color: #fafaf5;
+}
+
+section {
+    background: #F1F3F4;
+    border-color: slateblue;
+}
+
+content {
+    background: #FFFFFF;
+    border-color: #000000;
+    -webkit-flex: 4 1 0%;
+    flex: 4 1 0%;
+}
+
+aside {
+    background: #FFFFFF;
+    border-color: #000000;
+    -webkit-flex: 1 1 0%;
+    flex: 1 1 0%;
+}
+
+#news {
+    -webkit-align-self: flex-start;
+    align-self:  flex-start;
+}
+
+footer {
+    background: #FFFFFF;
+    border-color: #000000;
+    display: -webkit-flex;
+    -webkit-flex-flow: row wrap;
+    display: flex;
+    flex-flow: row wrap;
+}
+
+footer * {
+    -webkit-flex: 1 1 0%;
+    -webkit-justify-content: space-between;
+    flex: 1 1 0%;
+    justify-content: space-between;
+}
+
+footer p {
+    text-align: right;
+}
+
+table, td {
+    border-radius: 0.25em 0.25em;
+    border: 1px solid;
+    padding: 3px;
+    margin: 3px;
+}
+
+h1, h2 { line-height: 1.2; margin: 0 0 .5em; }
+h1 { font-size: 36px; }
+h2 { font-size: 24px; margin-bottom: 1em; }
+h3 { font-size: 18px}
+h4 { font-size: 16px}
+
+p { margin: 0 0 1em 0; }
+a { color: #000000; }
+
