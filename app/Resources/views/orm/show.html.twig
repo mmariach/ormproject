@@ -1,25 +1,36 @@
 {% extends 'base.html.twig' %}
 {% block body %}
+
     {% if categories %}
         {% for c in categories %}
-            <ul>
-                <li>
-                    <p>Category: {{ c.getName() }}</p>
+            <div class="container">
+                <div class="top">
+                    <h4>Category: {{ c.getName() }}</h4>
+                </div>
+                <div class="main">
                     {% for p in c.getProducts() %}
-                        <ul>
-                            <li>
-                                <p> Product name: {{ p.getName() }} , price: {{ p.getPrice() }} , description: {{ p.getDescription() }}
+                        <div class="box">
+                            <p><a href="/orm/show/{{ p.getId() }}">{{ p.getName() }} </a></p>
+                                {% if p.getImage() %}
+                                    <img src="{{ asset('uploads/img/' ~ p.getImage()) }}" height="150">
+                                {% else %}
+                                    <img src="{{ asset('uploads/img/blank.jpg') }}" height="150">
+                                {% endif %}
+                            <p><b>{{ p.getPrice() }} € </b></p>
+                            {#
                                 {% if p.getBrochure() %}
                                     <a href="{{ asset('uploads/document/' ~ p.getBrochure()) }}">View PDF</a>
                                 {% endif %}
                                 </p>
-                            </li>
-                        </ul>
+                            #}
+                        </div>
                     {% endfor %}
-                </li>
-            </ul>
+                </div>
+            </div>
+
         {% endfor %}
     {% endif %}
+
 {% endblock %}
 {% block sidepanel %}
     {{ parent() }}

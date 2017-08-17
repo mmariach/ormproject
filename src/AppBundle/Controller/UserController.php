@@ -109,14 +109,15 @@ class UserController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             //file upload
-            $file = $user->getUserAvatarFilename();
-            $fileName = md5(uniqid()).'.'.$file->guessExtension();
-            $file->move(
-                $this->getParameter('img_directory'),
-                $fileName
-            );
-            $user->setUserAvatarFilename($fileName);
-
+            if ($user->getUserAvatarFilename()) {
+                $file = $user->getUserAvatarFilename();
+                $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+                $file->move(
+                    $this->getParameter('img_directory'),
+                    $fileName
+                );
+                $user->setUserAvatarFilename($fileName);
+            }
             // 3) Encode the password (you could also do this via Doctrine listener)
             $password = $passwordEncoder->encodePassword($user, $user->getPlainPassword());
             $user->setPassword($password);
@@ -150,18 +151,29 @@ class UserController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             //file-upload: https://symfony.com/doc/current/controller/upload_file.html
             // $file stores the uploaded PDF file
-            /** @var Symfony\Component\HttpFoundation\File\UploadedFile $file */
-            $file = $product->getBrochure();
-            // Generate a unique name for the file before saving it
+            //allow empty Brochure
+            if ($product->getBrochure()) {
+                // @var Symfony\Component\HttpFoundation\File\UploadedFile $file */
+                $file = $product->getBrochure();
+                // Generate a unique name for the file before saving it
+                $fileName = md5(uniqid()).'.'.$file->guessExtension();
+                // Move the file to the directory where brochures are stored
+                $file->move(
+                    $this->getParameter('document_directory'),
+                    $fileName
+                );
+                // Update the 'brochure' property to store the PDF file name
+                // instead of its contents
+                $product->setBrochure($fileName);
+            }
+            //Product-Image
+            $file = $product->getImage();
             $fileName = md5(uniqid()).'.'.$file->guessExtension();
-            // Move the file to the directory where brochures are stored
             $file->move(
-                $this->getParameter('document_directory'),
+                $this->getParameter('img_directory'),
                 $fileName
             );
-            // Update the 'brochure' property to store the PDF file name
-            // instead of its contents
-            $product->setBrochure($fileName);
+            $product->setImage($fileName);
 
             //make persistent
             $em = $this->getDoctrine()->getManager();
@@ -185,7 +197,7 @@ class UserController extends Controller
             $em->flush();
 
             $this->addFlash('success', 'Product added to DB'.$product->getName());
-
+            return $this->redirectToRoute('orm_show_products');
         }
 
         return $this->render('admin/admin.html.twig', array(

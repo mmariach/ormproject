@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Admin main Control</h1>
+    <h2>Admin Product Control</h2>
     {# Username: {{ user.getUsername() }}#}
     {% if form %}
         <h3>Add a new Product:</h3>
-        <!-- Renders the start tag of the form, including the correct enctype attribute when using file uploads. -->
-        {{ form_start(form) }}
+        <!-- Renders he start tag of the form, including the correct enctype attribute when using file uploads. -->
+        {{ form_start(form, {'multipart': true}) }}
         <div>
             <table>
                 <tr>
@@ -17,6 +17,8 @@
                     <td>{{ form_row(form.price) }}</td>
                 </tr><tr>
                     <td>{{ form_row(form.description) }}</td>
+                </tr><tr>
+                    <td>{{ form_row(form.image) }}</td>
                 </tr><tr>
                     <td>{{ form_row(form.brochure) }}</td>
                 </tr>

@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
+
 /**
  * MyProduct
  *
@@ -24,12 +25,13 @@ class MyProduct
 
     /**
      * @var string
-     *
+     * @Assert\NotBlank()
      * @ORM\Column(name="name", type="string", length=100)
      */
     private $name;
 
     /**
+     * @Assert\NotBlank()
      * @ORM\Column(type="decimal", scale=2)
      */
     private $price;
@@ -48,12 +50,38 @@ class MyProduct
     private $category;
 
     /**
+     * @Assert\File(
+     *     maxSize = "500k",
+     *     mimeTypes={ "application/pdf" }
+     *     )
      * @ORM\Column(type="string", nullable=true)
-     *
-     * @Assert\File(mimeTypes={ "application/pdf" })
      */
     private $brochure;
 
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     * @Assert\File(
+     *     maxSize = "500k",
+     *     mimeTypes = {"image/jpg", "image/jpeg", "image/gif", "image/png", "image/tiff"}
+     * )
+     */
+    private $image;
+
+    /**
+     * @return mixed
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param mixed $image
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
+    }
 
     public function getBrochure()
     {

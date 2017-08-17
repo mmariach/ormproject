@@ -17,6 +17,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class OrmController extends Controller
 {
     /**
+     * Test Method
+     *
      * @Route("/orm/add/", name="orm_add")
      * @return Response
      **/
@@ -85,8 +87,8 @@ class OrmController extends Controller
         //Doctrine silently makes a second query to find the Category that's related to this Product. It prepares the $category object and returns it to you.
         $categoryName = $product->getCategory()->getName();
 
-        return $this->render('orm/show.html.twig', array(
-            'products' => array($product)
+        return $this->render('orm/detail.html.twig', array(
+            'product' => $product
         ));
     }
 

@@ -34,9 +34,9 @@
                         {% if m.getUser().getUserAvatarFilename() %}
                             <img src="{{ asset('uploads/img/' ~ m.getUser().getUserAvatarFilename()) }}" height="50">
                         {% endif %}
-                    {% else %}
-                        <img src="{{ asset('uploads/img/blank.jpg') }}" height="50">
-                    {% endif %}
+                        {% else %}
+                            <img src="{{ asset('uploads/img/blank.jpg') }}" height="50">
+                        {% endif %}
                 </td>
                 <td>{{ m.getAuthor() }}</td>
                 <td width="50%">{{ m.getTitle() }}</td>
