@@ -9,7 +9,7 @@
                 ID: {{ user.getId() }} <br>
                 Username: {{ user.getUsername() }} <br>
                 Email: {{ user.getEmail() }} <br>
-                {# BCrypt: {{ user.getPassword() }} #}
+                {#BCrypt: {{ user.getPassword() }}#}
                 {% if updatable %}
                     <br>
                    <a href="/user/{{ app.user.username }}/update">Change Profile</a>

@@ -7,7 +7,7 @@ namespace AppBundle\Security;
  * Date: 10.08.17
  * Time: 22:52
  */
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use AppBundle\Form\UserLoginType;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -17,7 +17,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * Using a Guard: the first step is always to create an authenticator class.
@@ -45,7 +45,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     //Symfonys UserPasswordEncoder
     private $passwordEncoder;
 
-    public function __construct(FormFactoryInterface $formFactory, EntityManager $em, RouterInterface $router, UserPasswordEncoder $passwordEncoder)
+    public function __construct(FormFactoryInterface $formFactory, EntityManagerInterface $em, RouterInterface $router, UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->formFactory = $formFactory;
         $this->em = $em;

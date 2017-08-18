@@ -30,11 +30,7 @@ class UserController extends Controller
      * @Route("/user/", name="user")
      */
     public function userAction($username=1) {
-        //admin cannot reach this site, because it's behind the firewall
-        //if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'))
-         //   return $this->redirectToRoute('admin');
-        //else
-            return $this->redirectToRoute('user_redirect', array('username' => $this->getUser()->getUsername()));
+        return $this->redirectToRoute('user_redirect', array('username' => $this->getUser()->getUsername()));
     }
 
     /**
@@ -197,7 +193,7 @@ class UserController extends Controller
             $em->flush();
 
             $this->addFlash('success', 'Product added to DB'.$product->getName());
-            return $this->redirectToRoute('orm_show_products');
+            return $this->redirectToRoute('orm_show');
         }
 
         return $this->render('admin/admin.html.twig', array(
