@@ -175,5 +175,11 @@ class MyProduct
     public function setCategory($category)
     {
         $this->category = $category;
-    }}
+    }
+
+    public function __toString()
+    {
+        return (string) $this->getName();
+    }
+}
 

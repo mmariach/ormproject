@@ -37,7 +37,7 @@ class SecurityController extends Controller
             // 3) Encode the password (you could also do this via Doctrine listener)
             $password = $passwordEncoder->encodePassword($user, $user->getPlainPassword());
             $user->setPassword($password);
-            
+
             // 4) save the User!
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
@@ -49,8 +49,8 @@ class SecurityController extends Controller
 
             /**
              * Send an Email to the User
-             * /
-            //$this->sendEmail('example@mail.com', $user->getEmail(), $user->getUsername());
+             */
+            //$this->sendEmail('test@example.at', $user->getEmail(), $user->getUsername());
 
             /**
              * Automatically login after registration:

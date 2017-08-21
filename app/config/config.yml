@@ -83,6 +83,47 @@ doctrine:
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
 
+# EasyAdminBundle: http://symfony.com/doc/master/bundles/EasyAdminBundle/
+easy_admin:
+    site_name: 'OrmDemoAdmin'
+    entities:
+        Message:
+            class: AppBundle\Entity\Message
+        Category:
+            class: AppBundle\Entity\MyCategory
+        Product:
+            class: AppBundle\Entity\MyProduct
+        User:
+            class: AppBundle\Entity\User
+            list:
+                fields:
+                    - id
+                    - username
+                    - email
+                    - { property: 'userAvatarFilename', label: 'User avatar', type: 'image', base_path: '/uploads/img/' }
+                sort: ['id', 'ASC']
+                actions: ['-delete', '-edit'] #remove the action
+            show:
+                fields:
+                    - id
+                    - username
+                    - email
+                    - isActive
+                    - password
+                    - { property: 'userAvatarFilename', label: 'User avatar', type: 'image', base_path: '/uploads/img/' }
+
+            disabled_actions: ['delete', 'edit'] #also disable the action, because it can be entered by action.edit
+
+    list:
+        title: 'List of %%entity_label%%'
+        actions: ['show']
+    edit:
+        title: 'edit'
+    new:
+        title: 'new'
+    show:
+        title: 'show'
+
 # Swiftmailer Configuration
 #swiftmailer:
 #    transport: '%mailer_transport%'

@@ -153,5 +153,9 @@ class Message
         $this->content = $content;
     }
 
+    public function __toString()
+    {
+        return (string) $this->getTitle();
+    }
 }
 
