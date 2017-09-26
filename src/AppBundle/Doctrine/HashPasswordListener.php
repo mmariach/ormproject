@@ -7,7 +7,7 @@ namespace AppBundle\Doctrine;
  * Date: 11.08.17
  * Time: 16:56
  */
-
+use AppBundle\Entity\User;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;

@@ -6,28 +6,58 @@
     <title>{% block title %}Welcome{% endblock %}</title>
     {% block stylesheets %}
         <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+        <!-- Latest compiled and minified CSS
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        -->
     {% endblock %}
-
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
 </head>
 <body>
 
+{% block javascripts %}
+    <!-- jQuery library
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    -->
+    <!-- Latest compiled JavaScript
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    -->
+    {#
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/base.js') }}"></script>
+    #}
+{% endblock %}
+
 <header>
     <nav>
         <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/blog">Blog</a></li>
-            <li><a href="/orm/show">Products</a></li>
+            <li><a href="{{ path('homepage') }}">{{ 'Home' | trans }}</a></li>
+            {# <li><a href="{{ path('homepage') }}">Home</a></li> #}
+            <li><a href="{{ path('blog') }}">{{ 'Blog' | trans }}</a></li>
+            <li><a href="{{ path('orm_show') }}">{{ 'Products' | trans }}</a></li>
             {% if is_granted('ROLE_USER') %}
-                <li><a href="/user/{{ app.user.username }}">User</a></li>
-                <li><a href="{{ path('logout') }}">Logout</a></li>
+                {# <li><a href="/user/{{ app.user.username }}">User</a></li> #}
+                <li><a href="{{ path('user_redirect', {'username': app.user.username}) }}">User</a></li>
+                <li><a href="{{ path('logout') }}">{{ 'Logout' | trans }}</a></li>
             {% elseif is_granted('ROLE_ADMIN') %}
-                <li><a href="{{ path('admin') }}">Admin</a></li>
-                <li><a href="{{ path('logout') }}">Logout</a></li>
+                <li><a href="{{ path('admin') }}">{{ 'Admin' | trans }}</a></li>
+                <li><a href="{{ path('logout') }}">{{ 'Logout' | trans }}</a></li>
             {% else %}
-                <li><a href="{{ path('login2') }}">Login</a></li>
+                <li><a href="{{ path('login2') }}">{{ 'Login' | trans }}</a></li>
+                <li><a href="{{ path('user_registration') }}">{{ 'Register' | trans }}</a></li>
             {% endif %}
-            <li><a href="/register">Register</a></li>
+            {# <li><a href="{{ path('change_language', {'_locale': 'de'}) }}">DE</a></li>
+                <li><a href="{{ path('change_language', {'_locale': 'en'}) }}">EN</a></li>  #}
+            <li><select onchange="if (this.value) window.location.href=this.value" style="width: 100px;">
+                    <option value="" selected>{{ 'Language' | trans }}</option>
+                    <option value="/changeLanguage/en">EN</option>
+                    <option value="/changeLanguage/de">DE</option>
+                </select>
+                {#<select id="switchLang" style="width: 100px;">
+                    <option selected>{{ 'Language' | trans }}</option>
+                    <option value="/changeLanguage/en">EN</option>
+                    <option value="/changeLanguage/de">DE</option>
+                </select>#}
+            </li>
         </ul>
     </nav>
 </header>
@@ -40,7 +70,7 @@
 
 <aside id="news">
     {% block sidepanel %}
-
+        {# include('default/userPanel.html.twig') #}
     {% endblock %}
 </aside>
 

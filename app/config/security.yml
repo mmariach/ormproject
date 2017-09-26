@@ -8,6 +8,7 @@ security:
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/easyadmin, roles: ROLE_ADMIN }
         - { path: ^/login2, roles: IS_AUTHENTICATED_ANONYMOUSLY}
+        - { path: ^/register2, roles: IS_AUTHENTICATED_ANONYMOUSLY}
         - { path: ^/user, roles: [ROLE_ADMIN, ROLE_USER]}
 
 
@@ -51,10 +52,11 @@ security:
             #http_basic: ~
 
             # https://symfony.com/doc/current/security/form_login_setup.html
+            #we are using our own login guard
             #form_login: ~
-            form_login:
-                login_path: login2
-                check_path: login2
+            #form_login:
+            #    login_path: login2
+            #    check_path: login2
 
             ## https://symfony.com/doc/current/security/entity_provider.html
             pattern:    ^/
@@ -66,6 +68,7 @@ security:
             guard:
                 authenticators:
                     - app.security.login_form_authenticator
+
             #Now, if the user goes to /logout, symfony will logging out automatically
             logout:
                 path: /logout

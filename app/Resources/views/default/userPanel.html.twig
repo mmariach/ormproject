@@ -1,8 +1,9 @@
-Registred Users:
+<p>{{ 'Registred Users' | trans }}</p>
 {% if users %}
     <ul>
     {% for u in users %}
-            <li><a href="/user/{{ u.getUsername() }}">{{ u.getUsername() }}</a></li>
+        <li><a href="{{ path('user_redirect', {'username': u.getUsername()}) }}">{{ u.getUsername() }}</a></li>
+         {# <li><a href="/user/{{ u.getUsername() }}">{{ u.getUsername() }}</a></li> #}
         {% endfor %}
     </ul>
 {% endif %}

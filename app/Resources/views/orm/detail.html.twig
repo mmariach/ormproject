@@ -3,15 +3,16 @@
     <table border="1" valign="center" width="100%">
         <tr>
             <td>
-                <h4>Product Information</h4>
+                <h4>{{ 'Product Information' | trans }}</h4>
                 ID: {{ product.getId() }} <br>
                 Name: {{ product.getName() }} <br>
                 Price: {{ product.getPrice() }} €<br>
                 Description: {{ product.getDescription() }} <br>
-                {# BCrypt: {{ user.getPassword() }} #}
                 {% if product.getBrochure() %}
                     Brochure: <a href="{{ asset('uploads/document/' ~ product.getBrochure()) }}">View PDF</a>
                 {% endif %}
+                <br><br>
+                Category: {{ product.getCategory() }}
             </td>
             {% if product.getImage() %}
                 <td width="37%" align="right">

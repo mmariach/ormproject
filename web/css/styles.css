@@ -138,6 +138,15 @@ table, td {
     margin: 3px;
 }
 
+a.button {
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+
+    text-decoration: none;
+    color: initial;
+}
+
 h1, h2 { line-height: 1.2; margin: 0 0 .5em; }
 h1 { font-size: 36px; }
 h2 { font-size: 24px; margin-bottom: 1em; }

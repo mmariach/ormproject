@@ -5,18 +5,22 @@
         {% for c in categories %}
             <div class="container">
                 <div class="top">
-                    <h4>Category: {{ c.getName() }}</h4>
+                    <h4>{{ 'Category' | trans }}: {{ c.getName() }}</h4>
                 </div>
                 <div class="main">
-                    {% for p in c.getProducts() %}
+                    {% for product in c.getProducts() %}
                         <div class="box">
-                            <p><a href="/orm/show/{{ p.getId() }}">{{ p.getName() }} </a></p>
-                                {% if p.getImage() %}
-                                    <img src="{{ asset('uploads/img/' ~ p.getImage()) }}" height="150">
-                                {% else %}
-                                    <img src="{{ asset('uploads/img/blank.jpg') }}" height="150">
-                                {% endif %}
-                            <p><b>{{ p.getPrice() }} € </b></p>
+                            <p>
+                                {#<a  href="/orm/show/{{ p.getId() }}">{{ p.getName() }} </a>#}
+                                <a href="{{ path('orm_index', {'id': product.getId() } ) }}"> {{ product.getName() }} </a>
+
+                            </p>
+                            {% if product.getImage() %}
+                                <img src="{{ asset('uploads/img/' ~ product.getImage()) }}" width="200" height="150">
+                            {% else %}
+                                <img src="{{ asset('uploads/img/blank.jpg') }}" height="150">
+                            {% endif %}
+                            <p><b>{{ product.getPrice() }} € </b></p>
                             {#
                                 {% if p.getBrochure() %}
                                     <a href="{{ asset('uploads/document/' ~ p.getBrochure()) }}">View PDF</a>

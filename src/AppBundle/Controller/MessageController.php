@@ -18,14 +18,14 @@ use Symfony\Component\HttpFoundation\Request;
 class MessageController extends Controller
 {
     /**
-     * @Route("/blog/")
+     * @Route("/blog/", name="blog")
      * @param int $id
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function postAction($id = 1, Request $request) {
         $msg = new Message();
-        $msg->setDate(new \DateTime('NOW'));
+        //check for a logged in user
         if($this->getUser()) {
             $msg->setAuthor($this->getUser()->getUsername());
             $msg->setUser($this->getUser());
@@ -38,6 +38,8 @@ class MessageController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $msg->setDate(new \DateTime('NOW'));
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($msg); //we can use the original $msg,
             $em->flush();
@@ -54,7 +56,7 @@ class MessageController extends Controller
     }
 
     /**
-     * @Route("/blog/{id}")
+     * @Route("/blog/{id}", name="blog_id")
      * @param int $id
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -71,4 +73,5 @@ class MessageController extends Controller
             'msgs' => null
         ));
     }
+
 }

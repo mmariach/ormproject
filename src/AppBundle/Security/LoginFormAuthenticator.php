@@ -77,8 +77,6 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
      */
     public function getCredentials(Request $request)
     {
-        // TODO: Implement getCredentials() method.
-
         //check, if the user has send a post-request from the correct path=/login
         // So if the URL is /login and the HTTP method is POST, our authenticator should spring into action
         $isLoginSubmit = $request->getPathInfo() == '/login2' && $request->isMethod('POST');
@@ -118,7 +116,6 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
      */
         public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        // TODO: Implement getUser() method.
         //$username = $credentials['_username'];
         $username = $credentials->getUsername();
 
@@ -145,7 +142,6 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
      */
     public function checkCredentials($credentials, UserInterface $user)
     {
-        // TODO: Implement checkCredentials() method.
         //$password = $credentials['_password'];
         $password = $credentials->getPassword();
 
@@ -163,7 +159,6 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
      */
     protected function getLoginUrl()
     {
-        // TODO: Implement getLoginUrl() method.
         return $this->router->generate('login2');
     }
 

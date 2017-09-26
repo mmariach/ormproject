@@ -2,7 +2,7 @@
 
 {% extends 'base.html.twig' %}
 {% block body %}
-
+    <h4>Blog</h4>
     {% if form %}
         <!-- Renders the start tag of the form, including the correct enctype attribute when using file uploads. -->
         {{ form_start(form) }}
@@ -48,10 +48,8 @@
         {% endfor %}
         </table>
     {% endif %}
-
 {% endblock %}
 {% block sidepanel %}
     {{ parent() }}
     {{ render(controller('AppBundle:Default:userPanel')) }}
 {% endblock %}
-

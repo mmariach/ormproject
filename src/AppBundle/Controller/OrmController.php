@@ -41,7 +41,6 @@ class OrmController extends Controller
         $product->setPrice(29.99);
         $product->setDescription('...with microphone!');
 
-
         // relate this product to the category
         $product->setCategory($category); //expected to a object!, not a value: $category->getId()
 
@@ -59,7 +58,6 @@ class OrmController extends Controller
     /**
      * @Route("/orm/show/", name="orm_show")
      * @return Response
-     *
      */
     public function showAction($id=1)
     {
@@ -79,16 +77,16 @@ class OrmController extends Controller
      * @Route("/orm/show/{id}", name="orm_index")
      * @return Response
      **/
-    public function indexAction($id)
+    public function indexAction(MyProduct $id)
     {
-        //
-        $product = $this->getDoctrine()->getRepository(MyProduct::class)->find($id);
+        //no need to query for the product, just pass it as argument. see show.html.twig
+        //$product = $this->getDoctrine()->getRepository(MyProduct::class)->find($id);
 
         //Doctrine silently makes a second query to find the Category that's related to this Product. It prepares the $category object and returns it to you.
-        $categoryName = $product->getCategory()->getName();
+        //$categoryName = $product->getCategory()->getName();
 
         return $this->render('orm/detail.html.twig', array(
-            'product' => $product
+            'product' => $id
         ));
     }
 

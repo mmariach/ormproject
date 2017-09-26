@@ -61,6 +61,17 @@ class User implements UserInterface, \Serializable
     private $isActive;
 
     /**
+     * //targetEntity=ClassName, //mappedBy=ClassName.variable
+     * @ORM\OneToMany(targetEntity="Message", mappedBy="user")
+     */
+    private $messages;
+
+    /**
+     * @ORM\OneToMany(targetEntity="UserFriends", mappedBy="friend")
+     */
+    private $friends;
+
+    /**
      * @ORM\Column(type="string", nullable=true)
      * @Assert\File(
      *     maxSize = "500k",
@@ -68,6 +79,17 @@ class User implements UserInterface, \Serializable
      * )
      */
     private $userAvatarFilename;
+
+    public function __construct()
+    {
+        $this->isActive = true;
+
+        $this->messages = new ArrayCollection();
+        $this->friends =  new ArrayCollection();
+
+        // may not be needed, see section on salt below
+        // $this->salt = md5(uniqid(null, true));
+    }
 
     /**
      * @return mixed
@@ -86,10 +108,20 @@ class User implements UserInterface, \Serializable
     }
 
     /**
-     * //targetEntity=ClassName, //mappedBy=ClassName.variable
-     * @ORM\OneToMany(targetEntity="Message", mappedBy="user")
+     * @return mixed
      */
-    private $messages;
+    public function getFriends()
+    {
+        return $this->friends;
+    }
+
+    /**
+     * @param mixed $friends
+     */
+    public function setFriends($friends)
+    {
+        $this->friends = $friends;
+    }
 
     /**
      * @return mixed
@@ -105,17 +137,6 @@ class User implements UserInterface, \Serializable
     public function setMessages($messages)
     {
         $this->messages = $messages;
-    }
-
-
-    public function __construct()
-    {
-        $this->isActive = true;
-
-        $this->messages = new ArrayCollection();
-
-        // may not be needed, see section on salt below
-        // $this->salt = md5(uniqid(null, true));
     }
 
     /**

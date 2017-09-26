@@ -18,14 +18,14 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 
-
+        
 class UserUpdateType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('email', EmailType::class)
-            ->add('userAvatarFilename', FileType::class, array('label' => 'Avatar Image', 'required'  => false, 'data_class' => null)) //solved problem with file type: see: https://stackoverflow.com/questions/14423265/symfony-2-form-exception-when-modifying-an-object-that-has-a-filepicture-fie
+            ->add('userAvatarFilename', FileType::class, array('label' => 'Avatar Image', 'required'  => false)) //solved problem with file type: see: https://stackoverflow.com/questions/14423265/symfony-2-form-exception-when-modifying-an-object-that-has-a-filepicture-fie
             ->add('plainPassword', PasswordType::class)
             ->add('submit', SubmitType::class)
         ;

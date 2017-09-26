@@ -37,8 +37,8 @@ services:
     #KPNUniversity: https://knpuniversity.com/screencast/symfony-security/authenticator-get-user-check-credentials#play
     #To do that, open up app/config/services.yml and register the authenticator as a service.
     app.security.login_form_authenticator:
-            class: AppBundle\Security\LoginFormAuthenticator
-            autowire: true
+        class: AppBundle\Security\LoginFormAuthenticator
+        autowire: true
 
     #https://knpuniversity.com/screencast/symfony-security/encoding-user-password#play
     #Finally, to tell Doctrine about our event subscriber, we'll add a tag
@@ -47,3 +47,27 @@ services:
         autowire: true
         tags:
             - { name: doctrine.event_subscriber }
+
+    #How to Register Event Listeners and Subscribers
+    #http://symfony.com/doc/current/doctrine/event_listeners_subscribers.html
+    #incuding: using my own logger in a Service Class
+    app.doctrine.my_product_listener:
+        class: AppBundle\Doctrine\MyProductListener
+        autowire: true
+        #arguments: #should be automatically loaded by autowire
+        #    - "@logger"
+        tags:
+            - { name: monolog.logger, channel: acme }
+            - { name: doctrine.event_listener, event: postPersist }
+
+    #test: Making the Locale "Sticky" during a User's Session
+    #http://symfony.com/doc/current/session/locale_sticky_session.html
+    AppBundle\EventSubscriber\LocaleSubscriber:
+        arguments: ['%kernel.default_locale%']
+        # redundant if you're using autoconfigure
+        tags: [kernel.event_subscriber]
+
+
+
+
+

@@ -1,7 +1,5 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-    {#<h3>    Welcome {{ app.user ? app.user.username : 'Anonymous' }} <br></h3>#}
-    {# <h3>    Welcome {{ user.getUsername()}} <br></h3>#}
     <table border="1" valign="center" width="100%">
         <tr>
             <td>
@@ -20,19 +18,14 @@
     </table>
 
     {% if form %}
-        {{ form_start(form) }}
-
-        {#  form_widget(form.task, {'attr': {'class': 'task_field'}})  #}
+        {{ form_start(form, {'multipart': true}) }}
         <div>
             <table>
                 <tr>
                     <td>
-                    {{ form_row(form.email) }}
-                        {# setting default value doesn't work for this FileType
-                    {{ form_row(form.userAvatarFilename, {value : user.getUserAvatarFilename()} ) }}#}
-                        {{ form_row(form.userAvatarFilename) }}
-                    {{ form_row(form.plainPassword) }}
-                    {{ form_row(form.submit) }}
+                        {{ form_row(form.friend) }}
+                        {{ form_row(form.msg) }}
+                        {{ form_row(form.submit) }}
                     </td>
                 </tr>
             </table>

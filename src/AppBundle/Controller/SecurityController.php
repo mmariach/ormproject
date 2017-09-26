@@ -22,7 +22,7 @@ class SecurityController extends Controller
 {
 
     /**
-     * @Route("/register", name="user_registration")
+     * @Route("/register2", name="user_registration")
      */
     public function registerAction(Request $request, UserPasswordEncoderInterface $passwordEncoder)
     {

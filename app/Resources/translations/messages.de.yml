@@ -1,0 +1,63 @@
+# messages.de.yml
+
+#main_menue
+Home: Start
+Blog: Blog
+Products: Produkte
+User: User
+Admin: Administrator
+Login: Anmelden
+Logout: Abmelden
+Register: Registrieren
+
+#userPanel
+Registred Users: Registrierte Benutzer
+
+#blog
+Title: Titel
+Text: Text
+
+#user
+User Information: Benutzerinformation
+Change Profile: Profil bearbeiten
+Edit: Bearbeiten
+Delete: Löschen
+Accept: Akzeptieren
+Reject: Ablehnen
+
+Send friend request: Freundschaftsanfrage senden
+
+
+#user_change_profile
+Avatar Image: Profilbild
+Plain password: Passwort
+
+#use edit blog
+Edit Blog Post: Blog Post bearbeiten
+
+#admin_add_product
+Category: Kategorie
+Name: Name
+Price: Preis
+Description: Beschreibung
+Product: Produkt
+Product Image: Produkt Bild
+Brochure: Prospekt
+Brochure (PDF): Prospekt (PDF)
+
+#product detail
+Product Information: Produktinformation
+
+#general
+Submit: Bestätigen
+Username: Benutzername
+Email: Email
+Password: Passwort
+Repeat Password: Passwort wiederholen
+
+Edit: Bearbeiten
+Delete: Löschen
+Language: Sprache
+
+#test
+Symfony Demo Project : Symfony Demo Projekt
