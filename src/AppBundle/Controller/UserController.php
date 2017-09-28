@@ -19,12 +19,17 @@ use AppBundle\Form\UserUpdateType;
 use AppBundle\Form\MessageType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * Class UserController
+ * @package AppBundle\Controller
+ */
 class UserController extends Controller
 {
 
@@ -150,10 +155,8 @@ class UserController extends Controller
     public function userUpdateAction(Request $request, $username, UserPasswordEncoderInterface $passwordEncoder)
     {
         $user = $this->getUser();
-        //if user is the owner
-        if($user->getUsername() !== $username) {
-            throw $this->createAccessDeniedException();
-        }
+        //security check, if user is the owner
+        $this->checkUserConditions($user, $username);
         /*
         $userDb = $this->getDoctrine()
             ->getRepository(User::class)
@@ -214,13 +217,9 @@ class UserController extends Controller
         if($blogPost === null) {
             throw $this->createNotFoundException();
         }
-
         $tmpUser = $this->getUser();  //only works in Controllers
-
-        //check, if user is the owner
-        if($tmpUser->getUsername() !== $username) {
-            throw $this->createAccessDeniedException();
-        }
+        //security check, if user is the owner //now, this method can only called by the owner
+        $this->checkUserConditions($tmpUser, $username);
 
         $form = $this->createForm(MessageType::class, $blogPost);
         $form->handleRequest($request);
@@ -245,11 +244,9 @@ class UserController extends Controller
             return $this->redirectToRoute('user');
         }
         $tmpUser = $this->getUser();  //only works in Controllers
+        //security check, if user is the owner //now, this method can only called by the owner
+        $this->checkUserConditions($tmpUser, $username);
 
-        //check, if user is the owner
-        if($tmpUser->getUsername() !== $username) {
-            throw $this->createAccessDeniedException();
-        }
         $em = $this->getDoctrine()->getManager();
         $em->remove($blogPost);
         $em->flush();
@@ -257,6 +254,8 @@ class UserController extends Controller
     }
 
     /**
+     * Test Method: currently not in use
+     *
      * @Route("/user/{username}/addFriend", name="add_friend")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
@@ -264,7 +263,6 @@ class UserController extends Controller
     public function addFriendAction(Request $request) {
         $user = $this->getUser();
         //$user->getFriends();
-
         //check for a logged in user
         if(!$user) {
             return;
@@ -286,8 +284,6 @@ class UserController extends Controller
             return $this->redirectToRoute('user');
         }
 
-
-
         return $this->render('user/addFriend.html.twig', array(
             'form' => $form->createView(),
             'user' => $user
@@ -297,16 +293,20 @@ class UserController extends Controller
 
     /**
      * 2nd method to add a friend: click on the link
+     * @param string $username //actual logged in username (app.user.username)
+     * @param User $friend //in this case: the userId of the actual page(user.getId()) == possible friend
+     * @return RedirectResponse
+     *
      * @Route("/user/{username}/add2Friend/{friend}", name="add2_friend")
      */
     public function add2FriendAction($username, User $friend)
     {
         $tmpUser = $this->getUser();
-
         if(!$tmpUser) {
             return;
         }
 
+        //(no need to check, if the user is the owner, because it's never the case)
         $userFriend = new UserFriends($tmpUser->getID());
         $userFriend->setFriend($friend);
         $userFriend->setMsg("You got a new friend request from: " . $username);
@@ -321,6 +321,11 @@ class UserController extends Controller
 
     /**
      * //currently: if a friend accepts the friend request, simple make him your friend in the other direction
+     * same params and return value for the folling methods...
+     * @param string $username //actual logged in username (app.user.username)
+     * @param User $friend //the userId of the possible friend (friend.getId())
+     * @return RedirectResponse
+     *     *
      * @Route("/user/{username}/confirmFriend/{friend}", name="confirm_friend")
      */
     public function confirmFriendAction($username, User $friend)
@@ -328,13 +333,9 @@ class UserController extends Controller
         if($friend === null) {
             throw $this->createNotFoundException();
         }
-
-        $tmpUser = $this->getUser();  //only works in Controllers
-
-        //check, if user is the owner
-        if($tmpUser->getUsername() !== $username) {
-            throw $this->createAccessDeniedException();
-        }
+        $tmpUser = $this->getUser();
+        //security check, if user is the owner //now, this method can only called by the owner
+        $this->checkUserConditions($tmpUser, $username);
 
         $userFriend = new UserFriends($tmpUser->getID());
         $userFriend->setFriend($friend);
@@ -355,6 +356,9 @@ class UserController extends Controller
 
     /**
      * currently: if a friend rejects the friend request, simple delete the UserFriends entry in the DB
+     * @param string $username //actual logged in username (app.user.username)
+     * @param User $friend //the userId of the possible friend (friend.getId())
+     * @return RedirectResponse
      *
      * @Route("/user/{username}/rejectFriend/{friend}", name="reject_friend")
      */
@@ -363,13 +367,9 @@ class UserController extends Controller
         if($friend === null) {
             throw $this->createNotFoundException();
         }
-
-        $tmpUser = $this->getUser();  //only works in Controllers
-
-        //check, if user is the owner
-        if($tmpUser->getUsername() !== $username) {
-            throw $this->createAccessDeniedException();
-        }
+        $tmpUser = $this->getUser();
+        //security check, if user is the owner //now, this method can only called by the owner
+        $this->checkUserConditions($tmpUser, $username);
 
         $em = $this->getDoctrine()->getManager();
         $otherFriend = $em->find('AppBundle\Entity\UserFriends', array('id' => $friend->getId(), 'friend' => $tmpUser->getId()));
@@ -378,5 +378,16 @@ class UserController extends Controller
         $em->flush();
         return $this->redirectToRoute('user');
 
+    }
+
+    /**
+     * @param User $user
+     * @param string $username
+     */
+    private function checkUserConditions(User $user, string $username)
+    {
+        if($user->getUsername() !== $username) {
+            throw $this->createAccessDeniedException();
+        }
     }
 }

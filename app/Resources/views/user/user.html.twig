@@ -96,7 +96,7 @@
                     <td>ID: {{ friend.getId() }} </td>
                     <td align="right">
                         {{ friend.getDate()|date('d.m.Y, H:i') }}
-                        {% if is_owner and not friend.isConfirmed() %} {# include edit and delete for the Owner #}
+                        {% if is_owner and not friend.isConfirmed() %} {# include accept and reject for the Owner #}
                             <a class="button" href="{{ path('confirm_friend', {'username': app.user.username , 'friend': friend.getId() } ) }}" style="color: green;">
                                 {{ 'Accept'| trans }}
                             </a>
