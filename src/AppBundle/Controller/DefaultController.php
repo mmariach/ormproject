@@ -6,6 +6,7 @@ use AppBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Entity\UserFriends;
 
 class DefaultController extends Controller
 {
@@ -49,7 +50,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/userPanel", name="userPanel")
+     * no route needed for a panel
      */
     public function userPanelAction(Request $request){
 
@@ -59,6 +60,27 @@ class DefaultController extends Controller
 
         return $this->render('default/userPanel.html.twig', array(
             'users' => $users
+        ));
+
+    }
+
+    /**
+     */
+    public function friendsPanelAction(Request $request, $userId)
+    {
+
+        //$users = $this->getDoctrine()->getRepository(User::class)->findAll();
+        //findAll users ASC
+        //$users = $this->getDoctrine()->getRepository(User::class)->findBy(array(), array('username' => 'ASC'));
+
+        $friends = $this->getDoctrine()
+            ->getRepository(UserFriends::class)
+            ->findOneByIdJoinedToUser($userId);
+
+        //$category = $product->getCategory();
+
+        return $this->render('default/friendsPanel.html.twig', array(
+            'friends' => $friends
         ));
 
     }

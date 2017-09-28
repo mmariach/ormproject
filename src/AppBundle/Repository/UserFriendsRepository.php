@@ -10,4 +10,20 @@ namespace AppBundle\Repository;
  */
 class UserFriendsRepository extends \Doctrine\ORM\EntityRepository
 {
+    // UserFriends::friend JOIN User::id
+    public function findOneByIdJoinedToUser($userId)
+    {
+        $query = $this->getEntityManager()
+            ->createQuery(
+                'SELECT f, u FROM AppBundle:UserFriends f
+                JOIN f.friend u
+                WHERE f.id = :id'
+            )->setParameter('id', $userId);
+
+        try {
+            return $query->getResult();
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            return null;
+        }
+    }
 }

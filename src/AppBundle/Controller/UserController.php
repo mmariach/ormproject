@@ -241,7 +241,7 @@ class UserController extends Controller
      */
     public function deleteBlogAction(Request $request, $username, Message $blogPost) {
         if($blogPost === null) {
-            return $this->redirectToRoute('user');
+            throw $this->createNotFoundException();
         }
         $tmpUser = $this->getUser();  //only works in Controllers
         //security check, if user is the owner //now, this method can only called by the owner
@@ -255,10 +255,10 @@ class UserController extends Controller
 
     /**
      * Test Method: currently not in use
-     *
-     * @Route("/user/{username}/addFriend", name="add_friend")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @Route("/user/{username}/addFriend", name="add_friend")
      */
     public function addFriendAction(Request $request) {
         $user = $this->getUser();

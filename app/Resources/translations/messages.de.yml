@@ -1,10 +1,14 @@
 # messages.de.yml
 
-#main_menue
+#base
+Welcome: Willkommen
+Made with: Erzeugt mit
+
+#base: main_menue
 Home: Start
 Blog: Blog
 Products: Produkte
-User: User
+User: Benutzer
 Admin: Administrator
 Login: Anmelden
 Logout: Abmelden

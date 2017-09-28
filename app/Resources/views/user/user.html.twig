@@ -2,6 +2,7 @@
 {% block body %}
     {#<h3>    Welcome {{ app.user ? app.user.username : 'Anonymous' }} <br></h3>#}
     {# <h3>    Welcome {{ user.getUsername()}} <br></h3>#}
+    {% set isVisitor = true %} {# if the user is a visitor display a friend request, else (user=owner||friend) display infos #}
     <table border="1" valign="center" width="100%">
         <tr>
             <td>
@@ -13,14 +14,16 @@
                 {% if is_owner %} {# insert a link to change profile, if the user is the owner #}
                     <br>
                     <a href="/user/{{ app.user.username }}/update">{{ 'Change Profile' | trans }}</a>
-                {% else %} {# insert a link to send a friend request, if the user is not already a friend #}
-                    {% set break = false %}
+                    {% set isVisitor = false %}
+                {% else %}  {# user is a visitor #}
+                    {% set break = false %} {# introduce a break/escape flag for the loop #}
                     {% for friend in friends if not break %}
-                        {% if  app.user.id == friend.getId() %}
+                        {% if  app.user.id == friend.getId() and friend.getIsConfirmed() %} {# the visitor is confirmed a friend #}
                             {% set break = true %}
+                            {% set isVisitor = false %}
                         {% endif %}
                     {% endfor %}
-                    {% if not break %}
+                    {% if not break %} {# insert a link to send a friend request, if the user is not already a friend #}
                         <br>
                         <a href="{{ path('add2_friend', {'username': app.user.username , 'friend': user.getId() } ) }}">
                             {{ 'Send friend request'| trans }}
@@ -54,66 +57,77 @@
         {{ form_end(form) }}
     {% endif %}
     #}
-    {% if messages is not empty  %}
-        <h4>Blog Posts</h4>
-        <table border="1" valign="center" width="100%">
-            {% for m in messages %}
-                <tr>
-                    <td rowspan="2">
-                        {% if m.getUser() %}
-                            {% if m.getUser().getUserAvatarFilename() %}
-                                <img src="{{ asset('uploads/img/' ~ m.getUser().getUserAvatarFilename()) }}" height="50">
-                            {% else %}
-                                <img src="{{ asset('uploads/img/blank.jpg') }}" height="50">
+    {% if not isVisitor %}
+        {% if messages is not empty %}
+            <h4>Blog Posts</h4>
+            <table border="1" valign="center" width="100%">
+                {% for m in messages %}
+                    <tr>
+                        <td rowspan="2">
+                            {% if m.getUser() %}
+                                {% if m.getUser().getUserAvatarFilename() %}
+                                    <img src="{{ asset('uploads/img/' ~ m.getUser().getUserAvatarFilename()) }}"
+                                         height="50">
+                                {% else %}
+                                    <img src="{{ asset('uploads/img/blank.jpg') }}" height="50">
+                                {% endif %}
                             {% endif %}
-                        {% endif %}
-                    </td>
-                    <td>{{ m.getAuthor() }}</td>
-                    <td width="50%">{{ m.getTitle() }}</td>
-                    <td align="right">
-                        {{ m.getDate()|date('d.m.Y, H:i') }}
-                        {% if is_owner %} {# include edit and delete for the Owner #}
-                            <a class="button" href="{{ path('edit_blog', {'username': app.user.username , 'blogPost': m.getId()} ) }}" style="color: green">
-                                {{ 'Edit' | trans }}
-                            </a>
-                            <a class="button" href="{{ path('delete_blog', {'username': app.user.username , 'blogPost': m.getId()} ) }}" style="color: red">
-                                {{ 'Delete' | trans }}
-                            </a>
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3" >{{ m.getContent() }}  </td>
-                </tr>
-            {% endfor %}
-        </table>
-    {% endif %}
-    {% if friends is not empty %}
-        <h4>Friends</h4>
-        <table border="1" valign="center" width="100%">
-            {% for friend in friends %}
-                <tr>
-                    <td>ID: {{ friend.getId() }} </td>
-                    <td align="right">
-                        {{ friend.getDate()|date('d.m.Y, H:i') }}
-                        {% if is_owner and not friend.isConfirmed() %} {# include accept and reject for the Owner #}
-                            <a class="button" href="{{ path('confirm_friend', {'username': app.user.username , 'friend': friend.getId() } ) }}" style="color: green;">
-                                {{ 'Accept'| trans }}
-                            </a>
-                            <a class="button" href="{{ path('reject_friend', {'username': app.user.username , 'friend': friend.getId() } ) }}" style="color: red;">
-                                {{ 'Reject'| trans }}
-                            </a>
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2"> {{ friend.getMsg() }} </td>
-                </tr>
-            {% endfor %}
-        </table>
+                        </td>
+                        <td>{{ m.getAuthor() }}</td>
+                        <td width="50%">{{ m.getTitle() }}</td>
+                        <td align="right">
+                            {{ m.getDate()|date('d.m.Y, H:i') }}
+                            {% if is_owner %} {# include edit and delete for the Owner #}
+                                <a class="button"
+                                   href="{{ path('edit_blog', {'username': app.user.username , 'blogPost': m.getId()} ) }}"
+                                   style="color: green">
+                                    {{ 'Edit' | trans }}
+                                </a>
+                                <a class="button"
+                                   href="{{ path('delete_blog', {'username': app.user.username , 'blogPost': m.getId()} ) }}"
+                                   style="color: red">
+                                    {{ 'Delete' | trans }}
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">{{ m.getContent() }}  </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+        {% if friends is not empty %}
+            <h4>Friends</h4>
+            <table border="1" valign="center" width="100%">
+                {% for friend in friends %}
+                    <tr>
+                        <td>ID: {{ friend.getId() }} </td>
+                        <td align="right">
+                            {{ friend.getDate()|date('d.m.Y, H:i') }}
+                            {% if is_owner and not friend.isConfirmed() %} {# include accept and reject for the Owner #}
+                                <a class="button"
+                                   href="{{ path('confirm_friend', {'username': app.user.username , 'friend': friend.getId() } ) }}"
+                                   style="color: green;">
+                                    {{ 'Accept'| trans }}
+                                </a>
+                                <a class="button"
+                                   href="{{ path('reject_friend', {'username': app.user.username , 'friend': friend.getId() } ) }}"
+                                   style="color: red;">
+                                    {{ 'Reject'| trans }}
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"> {{ friend.getMsg() }} </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
     {% endif %}
 {% endblock %}
 {% block sidepanel %}
     {{ parent() }}
-    {{ render(controller('AppBundle:Default:userPanel')) }}
+    {# render(controller('AppBundle:Default:friendsPanel', {'userId': user.getId()} )) #}
 {% endblock %}
