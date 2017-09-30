@@ -1,8 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-    {#<h3>    Welcome {{ app.user ? app.user.username : 'Anonymous' }} <br></h3>#}
     {# <h3>    Welcome {{ user.getUsername()}} <br></h3>#}
-    {% set isVisitor = true %} {# if the user is a visitor display a friend request, else (user=owner||friend) display infos #}
     <table border="1" valign="center" width="100%">
         <tr>
             <td>
@@ -14,16 +12,17 @@
                 {% if is_owner %} {# insert a link to change profile, if the user is the owner #}
                     <br>
                     <a href="/user/{{ app.user.username }}/update">{{ 'Change Profile' | trans }}</a>
-                    {% set isVisitor = false %}
                 {% else %}  {# user is a visitor #}
-                    {% set break = false %} {# introduce a break/escape flag for the loop #}
+                    {#
+                    {% set break = false %}
                     {% for friend in friends if not break %}
-                        {% if  app.user.id == friend.getId() and friend.getIsConfirmed() %} {# the visitor is confirmed a friend #}
+                        {% if  app.user.id == friend.getId() and friend.getIsConfirmed() %}
                             {% set break = true %}
                             {% set isVisitor = false %}
                         {% endif %}
                     {% endfor %}
-                    {% if not break %} {# insert a link to send a friend request, if the user is not already a friend #}
+                    #}
+                    {% if not is_friend %} {# insert a link to send a friend request, if the user is not a friend #}
                         <br>
                         <a href="{{ path('add2_friend', {'username': app.user.username , 'friend': user.getId() } ) }}">
                             {{ 'Send friend request'| trans }}
@@ -57,7 +56,8 @@
         {{ form_end(form) }}
     {% endif %}
     #}
-    {% if not isVisitor %}
+    {# if the user is a visitor(!is_owner && !is_friend) display a friend request, else (is_owner||is_friend) display infos #}
+    {% if is_owner or is_friend %}
         {% if messages is not empty %}
             <h4>Blog Posts</h4>
             <table border="1" valign="center" width="100%">

@@ -74,10 +74,10 @@ class OrmController extends Controller
 
 
     /**
-     * @Route("/orm/show/{id}", name="orm_index")
+     * @Route("/orm/show/{productId}", name="orm_index")
      * @return Response
      **/
-    public function indexAction(MyProduct $id)
+    public function indexAction(MyProduct $productId)
     {
         //no need to query for the product, just pass it as argument. see show.html.twig
         //$product = $this->getDoctrine()->getRepository(MyProduct::class)->find($id);
@@ -86,26 +86,23 @@ class OrmController extends Controller
         //$categoryName = $product->getCategory()->getName();
 
         return $this->render('orm/detail.html.twig', array(
-            'product' => $id
+            'product' => $productId
         ));
     }
 
     /**
      * @Route("/orm/showProducts/{categoryId}", name="orm_show_products")
      * @return Response
-     **/
-    public function showProductsAction($categoryId)
+     */
+    public function showProductsAction(int $categoryId)
     {
-            $category = $this->getDoctrine()
-                ->getRepository(MyCategory::class)
-                ->find($categoryId);
+        $category = $this->getDoctrine()
+            ->getRepository(MyCategory::class)
+            ->find($categoryId);
 
-            $products = $category->getProducts();
-            return $this->render('orm/show.html.twig', array(
-                'products' => $products
-            ));
-        // ...
+        return $this->render('orm/show.html.twig', array(
+            'categories' => array($categoryId => $category),
+        ));
     }
-
 
 }

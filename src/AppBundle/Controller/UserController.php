@@ -110,42 +110,55 @@ class UserController extends Controller
      * @Route("/user", name="user")
      */
     public function userAction($username=1) {
-        return $this->redirectToRoute('user_redirect', array('username' => $this->getUser()->getUsername()));
+        return $this->redirectToRoute('user_redirect', array('user' => $this->getUser()->getId()));
     }
 
     /**
      *
-     * @Route("/user/{username}", name="user_redirect")
+     * @Route("/user/{user}", name="user_redirect")
      */
-    public function userNameAction(Request $request, $username)
+    public function userNameAction(Request $request, User $user)
     {
         $isOwner = false;
+        $isFriend = false;
+        $messages = null;
+        $friends = null;
         //$this->denyAccessUnlessGranted('IS_AUTHENTICATED_ANONYMOUSLY', null, 'Unable to access this page!');
         $tmpUser = $this->getUser();  //only works in Controllers
 
         //find all msgs for this user
         //if user is the owner
-        if($tmpUser->getUsername() === $username) {
+        if ($tmpUser->getUsername() === $user->getUsername()) { //user is owner
             $user = $this->getDoctrine()
                 ->getRepository(User::class)
                 ->find($tmpUser->getId());
             $isOwner = true;
-        } else {
-            $user = $this->getDoctrine()
-                ->getRepository(User::class)
-                ->findOneBy(array('username' => $username));
+        } else { //user is not the owner
+            foreach ($user->getFriends() as $friend) { //find out, if the user is a friend
+                if ($tmpUser->getId() === $friend->getId()) {
+                    //echo $tmpUser->getUsername() . ' is a friend';
+                    $isFriend = true;
+                    break;
+                }
+            }
         }
 
-        $messages = $user->getMessages();
-        $friends = $user->getFriends();
+        if ($isFriend || $isOwner) {
+            $messages = $user->getMessages();
+            $friends = $user->getFriends();
+            /*
+            $friends = $this->getDoctrine()
+                ->getRepository(UserFriends::class)
+                ->findOneByIdJoinedToUser($userId);*/
+        }
 
         return $this->render('user/user.html.twig', array(
             //'form' => $form->createView(),
             'user' => $user,
-            'messages' => $messages,
             'is_owner' => $isOwner,
+            'is_friend' => $isFriend,
+            'messages' => $messages,
             'friends' => $friends
-
         ));
     }
 

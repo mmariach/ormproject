@@ -12,7 +12,7 @@
                         <div class="box">
                             <p>
                                 {#<a  href="/orm/show/{{ p.getId() }}">{{ p.getName() }} </a>#}
-                                <a href="{{ path('orm_index', {'id': product.getId() } ) }}"> {{ product.getName() }} </a>
+                                <a href="{{ path('orm_index', {'productId': product.getId() } ) }}"> {{ product.getName() }} </a>
 
                             </p>
                             {% if product.getImage() %}

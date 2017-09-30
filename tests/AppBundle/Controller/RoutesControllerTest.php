@@ -10,6 +10,32 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 class RoutesControllerTest extends WebTestCase
 {
+    /**
+     * @dataProvider urlProvider
+     */
+    public function testPageIsSuccessful($url)
+    {
+        $client = self::createClient();
+        $client->request('GET', $url);
+
+        $this->assertTrue($client->getResponse()->isSuccessful());
+    }
+
+    public function urlProvider()
+    {
+        return array(
+            array('/'),
+            array('/blog/'),
+            array('/blog/24'),
+            array('/orm/show/'),
+            array('/orm/show/15'),
+            array('/orm/showProducts/1'),
+            array('/login2'),
+            array('/register2'),
+
+        );
+    }
+
     public function testBlog()
     {
         $client = static::createClient();
