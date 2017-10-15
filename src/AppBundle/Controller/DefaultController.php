@@ -56,7 +56,9 @@ class DefaultController extends Controller
 
         //$users = $this->getDoctrine()->getRepository(User::class)->findAll();
         //findAll users ASC
-        $users = $this->getDoctrine()->getRepository(User::class)->findBy(array(), array('username' => 'ASC'));
+        $users = $this->getDoctrine()
+            ->getRepository(User::class)
+            ->findBy(array(), array('username' => 'ASC'));
 
         return $this->render('default/userPanel.html.twig', array(
             'users' => $users
@@ -88,21 +90,21 @@ class DefaultController extends Controller
     /**
      * @Route("/testSmarty", name="testSmarty")
      * @return \Symfony\Component\HttpFoundation\Response
-     */
+
     public function testSmartyAction()
-    {
-        $user = $this->getUser();
-        $arry = array(
-            'name' => 'Hans',
-            'value' => 15,
-            'user' => $user->__toString()
-
-        );
-        $logger = $this->get('logger');
-
-        return $this->render('default/index.html.smarty', array(
-            'arry' => $arry
-        ));
-    }
-
+    * {
+        * $user = $this->getUser();
+        * $arry = array(
+            * 'name' => 'Hans',
+            * 'value' => 15,
+            * 'user' => $user->__toString()
+ *
+* );
+        * $logger = $this->get('logger');
+ *
+* return $this->render('default/index.html.smarty', array(
+            * 'arry' => $arry
+        * ));
+     * }
+     */
 }

@@ -110,46 +110,55 @@ class UserController extends Controller
      * @Route("/user", name="user")
      */
     public function userAction($username=1) {
-        return $this->redirectToRoute('user_redirect', array('user' => $this->getUser()->getId()));
+        return $this->redirectToRoute('user_redirect', array('username' => $this->getUser()->getUsername()));
     }
 
     /**
      *
-     * @Route("/user/{user}", name="user_redirect")
+     * @Route("/user/{username}", name="user_redirect")
      */
-    public function userNameAction(Request $request, User $user)
+    public function userNameAction(Request $request, $username)
     {
         $isOwner = false;
         $isFriend = false;
         $messages = null;
         $friends = null;
         //$this->denyAccessUnlessGranted('IS_AUTHENTICATED_ANONYMOUSLY', null, 'Unable to access this page!');
-        $tmpUser = $this->getUser();  //only works in Controllers
+        $user = $this->getUser();  //only works in Controllers
 
         //find all msgs for this user
         //if user is the owner
-        if ($tmpUser->getUsername() === $user->getUsername()) { //user is owner
-            $user = $this->getDoctrine()
-                ->getRepository(User::class)
-                ->find($tmpUser->getId());
+        if ($user->getUsername() === $username) { //user is owner
+            // $user = $this->getDoctrine()
+            //     ->getRepository(User::class)
+            //     ->find($tmpUser->getId());
             $isOwner = true;
         } else { //user is not the owner
-            foreach ($user->getFriends() as $friend) { //find out, if the user is a friend
-                if ($tmpUser->getId() === $friend->getId()) {
-                    //echo $tmpUser->getUsername() . ' is a friend';
+            /* */
+            $other = $this->getDoctrine()//load other user from db
+            ->getRepository(User::class)
+                ->findOneBy(array('username' => $username));
+
+            $friends = $this->getDoctrine()//load all friends from other user
+            ->getRepository(UserFriends::class)
+                ->findOneByIdJoinedToUser($other->getId());
+
+            foreach ($friends as $friend) { //find out, if the user is a friend
+                if (($user->getId() === $friend->getFriend()->getId()) && $friend->getIsConfirmed()) {
                     $isFriend = true;
                     break;
                 }
             }
+            $user = $other; //to display infos about the user
         }
 
         if ($isFriend || $isOwner) {
             $messages = $user->getMessages();
-            $friends = $user->getFriends();
-            /*
+            //$friends = $user->getFriends();
             $friends = $this->getDoctrine()
                 ->getRepository(UserFriends::class)
-                ->findOneByIdJoinedToUser($userId);*/
+                ->findOneByIdJoinedToUser($user->getId());
+
         }
 
         return $this->render('user/user.html.twig', array(
@@ -271,34 +280,55 @@ class UserController extends Controller
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @Route("/user/{username}/addFriend", name="add_friend")
+     * @Route("/user/{username}/addFriend/{friend}", name="add_friend")
      */
-    public function addFriendAction(Request $request) {
-        $user = $this->getUser();
+    public function addFriendAction(Request $request, User $friend)
+    {
+        $user = $this->getUser(); //actual logged in user
         //$user->getFriends();
         //check for a logged in user
-        if(!$user) {
+        if (!$user || !$friend) {
             return;
         }
 
-        $userFriend = new UserFriends($user->getID());
-        //$userFriend->setFriend($user);
-        $userFriend->setMsg("You got a new friend request from: " . $user->getUsername());
+        //test a new way of adding a friend by passing arguments by URL
+        $userFriend = new UserFriends($user->getId());
+        $userFriend->setFriend($friend);
+        $userFriend->setMsg("You sent " . $friend->getUsername() . " a new friend request.");
+        $userFriend->setDate(new \DateTime('NOW'));
+        $userFriend->setIsConfirmed(true); //set this to true, that the user cannot confirm or reject
 
+        $otherFriend = new UserFriends($friend->getId());
+        $otherFriend->setFriend($user);
+        $otherFriend->setMsg("You got a friend request from: " . $user->getUsername());
+        $otherFriend->setDate(new \DateTime('NOW'));
+        $otherFriend->setIsConfirmed(false);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($userFriend);
+        $em->persist($otherFriend);
+        $em->flush();
+
+        $this->addFlash('success', 'Send a friend request to: ' . $friend->getUsername());
+
+
+        /*
         $form = $this->createForm(UserFriendsType::class, $userFriend);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $userFriend->setDate(new \DateTime('NOW'));
             //$userFriend->setId($userFriend->getId());
+            $userFriend->setIsConfirmed(true);
             $em = $this->getDoctrine()->getManager();
             $em->persist($userFriend);
             $em->flush();
             return $this->redirectToRoute('user');
         }
-
+*/
         return $this->render('user/addFriend.html.twig', array(
-            'form' => $form->createView(),
+            //'form' => $form->createView(),
+            'form' => null,
             'user' => $user
         ));
 
@@ -315,18 +345,26 @@ class UserController extends Controller
     public function add2FriendAction($username, User $friend)
     {
         $tmpUser = $this->getUser();
-        if(!$tmpUser) {
+        if (!$tmpUser || !$friend) {
             return;
         }
 
         //(no need to check, if the user is the owner, because it's never the case)
         $userFriend = new UserFriends($tmpUser->getID());
         $userFriend->setFriend($friend);
-        $userFriend->setMsg("You got a new friend request from: " . $username);
+        $userFriend->setMsg("You sent " . $friend->getUsername() . " a new friend request.");
         $userFriend->setDate(new \DateTime('NOW'));
+        $userFriend->setIsConfirmed(true); //allow this from the sender of the request. if the friend doesn't accept the request delete both entries
+
+        $otherFriend = new UserFriends($friend->getId());
+        $otherFriend->setFriend($tmpUser);
+        $otherFriend->setMsg("You got a friend request from: " . $tmpUser->getUsername());
+        $otherFriend->setDate(new \DateTime('NOW'));
+        $otherFriend->setIsConfirmed(false);
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($userFriend);
+        $em->persist($otherFriend);
         $em->flush();
 
         return $this->redirectToRoute('user');
@@ -350,20 +388,26 @@ class UserController extends Controller
         //security check, if user is the owner //now, this method can only called by the owner
         $this->checkUserConditions($tmpUser, $username);
 
+        /*
         $userFriend = new UserFriends($tmpUser->getID());
         $userFriend->setFriend($friend);
         $userFriend->setIsConfirmed(true);
         $userFriend->setMsg("You are now friends with : " . $username);
         $userFriend->setDate(new \DateTime('NOW'));
-
+ */
         $em = $this->getDoctrine()->getManager();
-        $em->persist($userFriend);
-        //$em->flush();
-
-        $otherFriend = $em->find('AppBundle\Entity\UserFriends', array('id' => $friend->getId(), 'friend' => $tmpUser->getId()));
+        //get the other friend and set the data
+        $otherFriend = $em->find('AppBundle\Entity\UserFriends',
+            array('id' => $tmpUser->getId(), 'friend' => $friend->getId()));
         $otherFriend->setIsConfirmed(true);
         $otherFriend->setMsg("You are now friends with : " . $friend->getUsername());
+        //get the user friend and set the data
+        $userFriend = $em->find('AppBundle\Entity\UserFriends',
+            array('id' => $friend->getId(), 'friend' => $tmpUser->getId()));
+        $userFriend->setMsg("You are now friends with : " . $tmpUser->getUsername());
+
         $em->flush();
+        $this->addFlash('success', 'Confirmed friend request from: ' . $username);
         return $this->redirectToRoute('user');
     }
 
@@ -385,9 +429,13 @@ class UserController extends Controller
         $this->checkUserConditions($tmpUser, $username);
 
         $em = $this->getDoctrine()->getManager();
-        $otherFriend = $em->find('AppBundle\Entity\UserFriends', array('id' => $friend->getId(), 'friend' => $tmpUser->getId()));
-
+        $otherFriend = $em->find('AppBundle\Entity\UserFriends',
+            array('id' => $tmpUser->getId(), 'friend' => $friend->getId()));
         $em->remove($otherFriend);
+        $userFriend = $em->find('AppBundle\Entity\UserFriends',
+            array('id' => $friend->getId(), 'friend' => $tmpUser->getId()));
+        $em->remove($userFriend);
+
         $em->flush();
         return $this->redirectToRoute('user');
 

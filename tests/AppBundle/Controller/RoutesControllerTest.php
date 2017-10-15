@@ -32,6 +32,7 @@ class RoutesControllerTest extends WebTestCase
             array('/orm/showProducts/1'),
             array('/login2'),
             array('/register2'),
+            //array('/changeLanguage/de'),
 
         );
     }
@@ -46,6 +47,13 @@ class RoutesControllerTest extends WebTestCase
             'Title',
             $client->getResponse()->getContent()
         );
+        /*
+                $form = $crawler->selectButton('submit')->form();
+
+                $crawler = $client->submit($form, array('title' => 'test', 'content' => 'test'));
+
+        */
+
     }
 
     public function testProducts()

@@ -36,7 +36,8 @@
             <li><a href="{{ path('orm_show') }}">{{ 'Products' | trans }}</a></li>
             {% if is_granted('ROLE_USER') %}
                 {# <li><a href="/user/{{ app.user.username }}">User</a></li> #}
-                <li><a href="{{ path('user_redirect', {'user': app.user.id }) }}">{{ 'User' | trans }}</a></li>
+                <li><a href="{{ path('user_redirect', {'username': app.user.username }) }}">{{ 'User' | trans }}</a>
+                </li>
                 <li><a href="{{ path('logout') }}">{{ 'Logout' | trans }}</a></li>
             {% elseif is_granted('ROLE_ADMIN') %}
                 <li><a href="{{ path('admin') }}">{{ 'Admin' | trans }}</a></li>
@@ -47,7 +48,7 @@
             {% endif %}
             {# <li><a href="{{ path('change_language', {'_locale': 'de'}) }}">DE</a></li>
                 <li><a href="{{ path('change_language', {'_locale': 'en'}) }}">EN</a></li>  #}
-            <li><select onchange="if (this.value) window.location.href=this.value" style="width: 100px;">
+            <li><select onchange="if (this.value) window.location.href=this.value">
                     <option value="" selected>{{ 'Language' | trans }}</option>
                     <option value="/changeLanguage/en">EN</option>
                     <option value="/changeLanguage/de">DE</option>
@@ -68,7 +69,7 @@
     {% endblock %}
 </content>
 
-<aside id="news">
+<aside>
     {% block sidepanel %}
         {{ render(controller('AppBundle:Default:userPanel')) }}
 

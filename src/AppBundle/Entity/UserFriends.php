@@ -23,10 +23,8 @@ class UserFriends
 
     /**
      * @ORM\Id
-     * //targetEntity=ClassName, //inversedBy=ClassName.variable
      * @ORM\ManyToOne(targetEntity="User", inversedBy="friends")
      * @ORM\JoinColumn(name="app_users_id", referencedColumnName="id")
-     * //name=ORM\TableColumnName, //referencedColumnName="id" (MyProduct.my_category_id -> MyCategory.id)
      */
     private $friend;
 
@@ -55,7 +53,7 @@ class UserFriends
     /**
      * set $isConfirmed to false
      */
-    public function __construct($id)
+    public function __construct(int $id)
     {
         $this->id = $id;
         $this->isConfirmed = false;

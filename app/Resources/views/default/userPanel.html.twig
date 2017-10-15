@@ -2,7 +2,7 @@
 {% if users %}
     <ul>
     {% for u in users %}
-        <li><a href="{{ path('user_redirect', {'user': u.getId()}) }}">{{ u.getUsername() }}</a></li>
+        <li><a href="{{ path('user_redirect', {'username': u.getUsername()}) }}">{{ u.getUsername() }}</a></li>
 
         {# <li><a href="/user/{{ u.getUsername() }}">{{ u.getUsername() }}</a></li> #}
         {% endfor %}

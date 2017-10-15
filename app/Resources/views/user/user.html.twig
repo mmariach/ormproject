@@ -33,7 +33,9 @@
             </td>
             {% if user.getUserAvatarFilename() %}
                 <td width="37%" align="right">
-                    <img src="{{ asset('uploads/img/' ~ user.getUserAvatarFilename()) }}" height="150">
+                    <div class="user-img">
+                        <img src="{{ asset('uploads/img/' ~ user.getUserAvatarFilename()) }}">
+                    </div>
                 </td>
             {% endif %}            
         </tr>
@@ -78,15 +80,11 @@
                         <td align="right">
                             {{ m.getDate()|date('d.m.Y, H:i') }}
                             {% if is_owner %} {# include edit and delete for the Owner #}
-                                <a class="button"
-                                   href="{{ path('edit_blog', {'username': app.user.username , 'blogPost': m.getId()} ) }}"
-                                   style="color: green">
-                                    {{ 'Edit' | trans }}
+                                <a href="{{ path('edit_blog', {'username': app.user.username , 'blogPost': m.getId()} ) }}"
+                                   class="button" style="color: green"> {{ 'Edit' | trans }}
                                 </a>
-                                <a class="button"
-                                   href="{{ path('delete_blog', {'username': app.user.username , 'blogPost': m.getId()} ) }}"
-                                   style="color: red">
-                                    {{ 'Delete' | trans }}
+                                <a href="{{ path('delete_blog', {'username': app.user.username , 'blogPost': m.getId()} ) }}"
+                                   class="button" style="color: red">{{ 'Delete' | trans }}
                                 </a>
                             {% endif %}
                         </td>
@@ -102,19 +100,23 @@
             <table border="1" valign="center" width="100%">
                 {% for friend in friends %}
                     <tr>
-                        <td>ID: {{ friend.getId() }} </td>
+                        <td rowspan="2" style="width: auto">
+                            {% if friend.getFriend().getUserAvatarFilename() %}
+                                <img src="{{ asset('uploads/img/' ~ friend.getFriend().getUserAvatarFilename()) }}"
+                                     height="50">
+                            {% else %}
+                                <img src="{{ asset('uploads/img/blank.jpg') }}" height="50">
+                            {% endif %}
+                        </td>
+                        <td width="50%">{{ friend.getFriend().getUsername() }} </td>
                         <td align="right">
                             {{ friend.getDate()|date('d.m.Y, H:i') }}
                             {% if is_owner and not friend.isConfirmed() %} {# include accept and reject for the Owner #}
-                                <a class="button"
-                                   href="{{ path('confirm_friend', {'username': app.user.username , 'friend': friend.getId() } ) }}"
-                                   style="color: green;">
-                                    {{ 'Accept'| trans }}
+                                <a href="{{ path('confirm_friend', {'username': app.user.username , 'friend': friend.getFriend().getId() } ) }}"
+                                   class="button" style="color: green;">{{ 'Accept'| trans }}
                                 </a>
-                                <a class="button"
-                                   href="{{ path('reject_friend', {'username': app.user.username , 'friend': friend.getId() } ) }}"
-                                   style="color: red;">
-                                    {{ 'Reject'| trans }}
+                                <a href="{{ path('reject_friend', {'username': app.user.username , 'friend': friend.getFriend().getId() } ) }}"
+                                   class="button" style="color: red;">{{ 'Reject'| trans }}
                                 </a>
                             {% endif %}
                         </td>
